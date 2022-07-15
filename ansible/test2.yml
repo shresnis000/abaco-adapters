@@ -1,0 +1,41 @@
+- hosts: all
+  gather_facts: no
+  become: true
+  vars:
+    abaco_host_id: "{{  ansible_ssh_host.split('.')[3] }}"
+  tasks:
+  - name: Gather facts for first time
+    setup:
+  
+  - name: get the username running the deploy
+    become: false
+    local_action: command whoami
+    register: local_username
+
+  - name: get the homedir of the user running the deploy
+    become: false
+    local_action: command echo $HOME
+    register: local_homedir
+
+  - fail:
+      msg: "please do not run as root"
+    when: local_username.stdout == "root"
+
+  - name: ensure docker is running
+    service: name=docker state=started enabled=yes
+  
+  - name: test2.py
+    template:
+      src: "{{local_homedir.stdout}}/abaco-adapters/test-suite/test2.py"
+      dest: /home/apim/config-local.json
+      owner: apim
+
+  - name: perform test 2 
+    become: yes
+    become_user: apim
+    environment:
+      abaco_path: /home/apim
+      TAG: dev
+    shell: /usr/local/bin/docker-compose -f docker-compose-compute.yml up -d
+    args:
+      chdir: /home/apim
