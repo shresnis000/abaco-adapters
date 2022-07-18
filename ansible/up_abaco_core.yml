@@ -36,12 +36,26 @@
       src: "{{local_homedir.stdout}}/abaco-adapters/abaco_files/config-local.json"
       dest: /home/apim/config-local.json
       owner: apim
-
-  - name: runtime
+  
+ - name: runtime
     template:
       src: "{{local_homedir.stdout}}/abaco-adapters/abaco_files/runtime_files"
       dest: /home/apim/runtime_files
       owner: apim
+
+  - name: Ensure directory structure exists
+    file:
+      path: /home/apim/runtime_files
+      state: directory
+    with_filetree: "{{local_homedir.stdout}}/abaco-adapters/abaco_files/runtime_files"
+    when: item.state == 'directory'
+
+  - name: Ensure files are populated from templates
+    template:
+      src: "{{local_homedir.stdout}}/abaco-adapters/abaco_files/runtime_files"
+      dest: /home/apim/runtime_files
+    with_filetree: "{{local_homedir.stdout}}/abaco-adapters/abaco_files/runtime_files"
+    when: item.state == 'file'
 
   - name: abaco.log
     template:
