@@ -7,7 +7,7 @@
   tasks:
   - name: docker compose down
     become: yes
-    become_user: apim
+    become_user: cc
     shell: /usr/bin/docker rm -f `/usr/bin/docker ps -aq`
     args:
-      chdir: /home/apim
+      chdir: /home/cc

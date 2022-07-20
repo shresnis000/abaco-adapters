@@ -1,10 +1,15 @@
 ---
-version: "2"
+version: "3.4"
+
+networks:
+    abaco:
+        driver: bridge
+
 
 services:
 
     spawner:
-        image: abaco/core-v3:$TAG
+        image: abaco/core-v3:dev
         command: "python3 -u /home/tapis/actors/spawner.py"
         volumes:
             - ./config-local.json:/home/tapis/config.json
@@ -25,7 +30,7 @@ services:
             - abaco
 
     health:
-        image: abaco/core-v3:$TAG
+        image: abaco/core-v3:dev
         command: /home/tapis/actors/health_check.sh
         volumes:
             - /:/host

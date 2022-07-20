@@ -49,7 +49,7 @@
     "web_access_control": "{{globalconfig['web_access_control']}}",
     "web_user_role": "{{globalconfig['web_user_role']}}",
     "web_accept_nonce": {{globalconfig['web_accept_nonce']| jsonify}},
-    "web_apim_public_key": "{{globalconfig['web_apim_public_key']}}",
+    "web_cc_public_key": "{{globalconfig['web_cc_public_key']}}",
     "web_show_traceback": {{globalconfig['web_show_traceback']| jsonify}},
     "web_max_log_length": {{globalconfig['web_max_log_length']| jsonify}},
     "web_case": "{{globalconfig['web_case']}}",

@@ -6,10 +6,10 @@
   tasks:
     - name: get logs
       become: yes
-      become_user: apim
+      become_user: cc
       shell: cat worker.log | grep ERROR
 
     #- name: show ERROR in logs
       #debug: k8s_version.stdout
     #  args:
-     #  chdir: /home/apim/logs
+     #  chdir: /home/cc/logs

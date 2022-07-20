@@ -27,15 +27,15 @@
   - name: test2.py
     template:
       src: "{{local_homedir.stdout}}/abaco-adapters/test-suite/test2.py"
-      dest: /home/apim/config-local.json
-      owner: apim
+      dest: /home/cc/config-local.json
+      owner: cc
 
   - name: perform test 2 
     become: yes
-    become_user: apim
+    become_user: cc
     environment:
-      abaco_path: /home/apim
+      abaco_path: /home/cc
       TAG: dev
     shell: /usr/local/bin/docker-compose -f docker-compose-compute.yml up -d
     args:
-      chdir: /home/apim
+      chdir: /home/cc

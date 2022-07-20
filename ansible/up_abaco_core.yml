@@ -28,59 +28,83 @@
       msg: "please do not run as root"
     when: local_username.stdout == "root"
 
+  - name: set mydistribution
+    ansible.builtin.set_fact:
+      mydistribution: "{{ 'rhel' if (ansible_distribution == 'Red Hat Enterprise Linux') else (ansible_distribution | lower) }}"
+
+  - name: Add signing key
+    ansible.builtin.rpm_key:
+      key: "https://download.docker.com/linux/{{ mydistribution }}/gpg"
+      state: present
+
+  - name: Add repository into repo.d list
+    ansible.builtin.yum_repository:
+      name: docker
+      description: docker repository
+      baseurl: "https://download.docker.com/linux/{{ mydistribution }}/$releasever/$basearch/stable"
+      enabled: true
+      gpgcheck: true
+      gpgkey: "https://download.docker.com/linux/{{ mydistribution }}/gpg"
+
+  - name: Install Docker
+    ansible.builtin.yum:
+      name:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+      state: latest
+      update_cache: true
+
   - name: ensure docker is running
     service: name=docker state=started enabled=yes
+
+  - name: Install docker-compose
+    become: yes
+    command: curl -L "https://github.com/docker/compose/releases/download/v2.6.1/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose
+
+  - name: Permissions for docker-compose
+    become: yes
+    command: chmod +x /usr/local/bin/docker-compose
  
- - name: config-local.json
+  - name: config-local.json
     template:
       src: "{{local_homedir.stdout}}/abaco-adapters/abaco_files/config-local.json"
-      dest: /home/apim/config-local.json
-      owner: apim
-  
- - name: runtime
-    template:
+      dest: /home/cc/config-local.json
+      owner: cc
+
+  - name: Copy runtime_files directory
+    copy:
       src: "{{local_homedir.stdout}}/abaco-adapters/abaco_files/runtime_files"
-      dest: /home/apim/runtime_files
-      owner: apim
-
-  - name: Ensure directory structure exists
-    file:
-      path: /home/apim/runtime_files
-      state: directory
-    with_filetree: "{{local_homedir.stdout}}/abaco-adapters/abaco_files/runtime_files"
-    when: item.state == 'directory'
-
-  - name: Ensure files are populated from templates
-    template:
-      src: "{{local_homedir.stdout}}/abaco-adapters/abaco_files/runtime_files"
-      dest: /home/apim/runtime_files
-    with_filetree: "{{local_homedir.stdout}}/abaco-adapters/abaco_files/runtime_files"
-    when: item.state == 'file'
-
+      dest: "{{local_homedir.stdout}}/runtime_files"
+ 
   - name: abaco.log
     template:
       src: "{{local_homedir.stdout}}/abaco-adapters/abaco_files/abaco.log"
-      dest: /home/apim/abaco.log
-      owner: apim
+      dest: /home/cc/abaco.log
+      owner: cc
     
   - name: nginx.conf
     template:
       src: "{{local_homedir.stdout}}/abaco-adapters/abaco_files/nginx.conf"
-      dest: /home/apim/nginx.conf
-      owner: apim
+      dest: /home/cc/nginx.conf
+      owner: cc
 
   - name: docker-compose-core.yml  
     template:
       src: "{{local_homedir.stdout}}/abaco-adapters/abaco_files/docker-compose-core.yml"
-      dest: /home/apim/docker-compose-core.yml
-      owner: apim
+      dest: /home/cc/docker-compose-core.yml
+      owner: cc
+ 
+  - name: Grant docker perms
+    become: yes
+    command: sudo setfacl --modify user:cc:rw /var/run/docker.sock
 
   - name: docker compose up 
     become: yes
-    become_user: apim
+    become_user: cc
     environment:
-      abaco_path: /home/apim
+      abaco_path: /home/cc
       TAG: dev
     shell: /usr/local/bin/docker-compose -f docker-compose-core.yml up -d
     args:
-      chdir: /home/apim
+      chdir: /home/cc
