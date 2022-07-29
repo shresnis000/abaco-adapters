@@ -1,30 +1,24 @@
-import docker
-import timeit
-import time
 import requests
+import statistics
 
-cli = docker.APIClient('unix://var/run/docker.sock')
-dname = 'testin'
-start_timer = timeit.default_timer()
-cont = cli.create_container(image='nshresth/flask-helloworld', name=dname, ports=[5000], host_config=cli.create_host_config(port_bindings={5000: None}))
-container = cli.start(container=cont.get('Id'))
-idx = 0
-while idx<25:
-    try:
-        port=cli.inspect_container(cont.get('Id'))['NetworkSettings']['Ports']['5000/tcp'][0]['HostPort']
-        break
-    except:
-        idx = idx+1
-        time.sleep(1)
-sent_request = timeit.default_timer()
-r = requests.get(f'http://localhost:{port}')
-got_response = timeit.default_timer()
-cli.kill(dname)
-cli.prune_containers()
-end_timer = timeit.default_timer
-time_data = {'total': (end_timer - start_timer) * 1000,
-                     'get_response': (got_response - sent_request) * 1000,
-                     'initialization': (sent_request - got_response) * 1000,
-                     }
+base_url = "http://localhost:8000"
+trials=100
+time_data=list(range(trials-1))
+time_stats={}
+for i in range(trials-1):
+    r4 = requests.get(f'{base_url}/app')
+    time_data[i] = (r4.elapsed.total_seconds()) * 1000
 
-print(time_data)
+#number of calls made
+time_stats['n']=trials
+#median
+time_stats['median']=statistics.median(time_data)
+#mean
+time_stats['mean']=statistics.mean(time_data)
+#standard deviation
+time_stats['standard deviation']=statistics.pstdev(time_data)
+#max
+time_stats['max']=max(time_data)
+#min
+time_stats['min']=min(time_data)
+print(time_stats)

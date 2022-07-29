@@ -1,16 +1,31 @@
+from asyncio import tasks
 import requests
 from tapipy.tapis import Tapis
 import os
 import time
-import timeit
 import sys
 import json
 import statistics
+import asyncio
+import aiohttp
 
 def basic_response_checks(rsp):
     data = json.loads(rsp.content.decode('utf-8'))
     result = data['result']
     return result
+
+def get_tasks(session,trials,base_url,reeeee,headers):
+    tasks = []
+    for i in range(trials-1):
+        tasks.append(session.get(f'{base_url}/adapters/{reeeee}/data', headers=headers, ssl=False))
+    return tasks
+
+async def get_timedata(trials,timedata):
+    async with aiohttp.ClientSession() as session:
+        for i in range(trials-1):
+            tasks = get_tasks(session)
+            r4 = await asyncio.gather(*tasks)
+            timedata[i] = await (r4[i].elapsed.total_seconds()) * 1000
 
 sys.path.append(os.path.split(os.getcwd())[0])
 sys.path.append('/actors')
@@ -39,9 +54,10 @@ while idx<20 and not success:
 trials=100
 time_data=range(trials-1)
 time_stats={}
-for i in range(trials-1):
-    r4 = requests.get(f'{base_url}/adapters/{reeeee}/data', headers=headers)
-    time_data[i] = (r4.elapsed.total_seconds()) * 1000
+r4=range(trials-1)
+
+asyncio.run(get_timedata(trials,time_data))
+
 
 #number of calls made
 time_stats['n']=trials

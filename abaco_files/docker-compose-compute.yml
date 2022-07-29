@@ -23,9 +23,6 @@ services:
             TAS_ROLE_ACCT:
             TAS_ROLE_PASS:
             queue: default
-        depends_on:
-            - mongo
-            - reg
         networks:
             - abaco
 
@@ -48,8 +45,5 @@ services:
             _abaco_DEV-DEVELOP_password: testotheruser
             _abaco_DEV-STAGING_username: testotheruser
             _abaco_DEV-STAGING_password: testotheruser
-        depends_on:
-            - mongo
-            - reg
         networks:
             - abaco
