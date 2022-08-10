@@ -83,7 +83,7 @@ services:
         command: ["nginx", "-g", "daemon off;"]
 
     reg:
-        image: abaco/core-v3:dev
+        image: nshresth/core-v3:dev
         ports:
             - "5000:5000"
         volumes:
@@ -105,7 +105,7 @@ services:
             - abaco
 
     mes:
-        image: abaco/core-v3:dev
+        image: nshresth/core-v3:dev
         volumes:
             - ./config-local.json:/home/tapis/config.json
             - ./abaco.log:/home/tapis/runtime_file/logs/service.log
@@ -128,7 +128,7 @@ services:
             - abaco
     
     admin:
-        image: abaco/core-v3:dev
+        image: nshresth/core-v3:dev
         volumes:
             - ./config-local.json:/home/tapis/config.json
             - ./abaco.log:/home/tapis/runtime_file/logs/service.log

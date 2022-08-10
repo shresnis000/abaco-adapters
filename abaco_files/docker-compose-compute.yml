@@ -9,7 +9,7 @@ networks:
 services:
 
     spawner:
-        image: abaco/core-v3:dev
+        image: nshresth/core-v3:dev
         command: "python3 -u /home/tapis/actors/spawner.py"
         volumes:
             - ./config-local.json:/home/tapis/config.json
@@ -27,7 +27,7 @@ services:
             - abaco
 
     health:
-        image: abaco/core-v3:dev
+        image: nshresth/core-v3:dev
         command: /home/tapis/actors/health_check.sh
         volumes:
             - /:/host
