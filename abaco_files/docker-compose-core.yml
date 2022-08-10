@@ -22,8 +22,8 @@ services:
         ports:
             - "27017:27017"
         volumes:
-            - ./runtime_files/certs:/data/ssl
-            - ./runtime_files/certs/mongo-replica-set-keyfile:/keyfiles/metakeyfile
+            - ./runtime_file/certs:/data/ssl
+            - ./runtime_file/certs/mongo-replica-set-keyfile:/keyfiles/metakeyfile
         networks:
             - abaco
         ulimits:
@@ -88,8 +88,8 @@ services:
             - "5000:5000"
         volumes:
             - ./config-local.json:/home/tapis/config.json
-            - ./abaco.log:/home/tapis/runtime_files/logs/service.log
-            - ./runtime_files/certs:/home/tapis/runtime_files/certs
+            - ./abaco.log:/home/tapis/runtime_file/logs/service.log
+            - ./runtime_file/certs:/home/tapis/runtime_file/certs
         environment:
             abaco_host_path: ${abaco_path}
             api: reg
@@ -108,8 +108,8 @@ services:
         image: abaco/core-v3:dev
         volumes:
             - ./config-local.json:/home/tapis/config.json
-            - ./abaco.log:/home/tapis/runtime_files/logs/service.log
-            - ./runtime_files/certs:/home/tapis/runtime_files/certs
+            - ./abaco.log:/home/tapis/runtime_file/logs/service.log
+            - ./runtime_file/certs:/home/tapis/runtime_file/certs
         ports:
             - "5001:5000"
         environment:
@@ -131,8 +131,8 @@ services:
         image: abaco/core-v3:dev
         volumes:
             - ./config-local.json:/home/tapis/config.json
-            - ./abaco.log:/home/tapis/runtime_files/logs/service.log
-            - ./runtime_files/certs:/home/tapis/runtime_files/certs
+            - ./abaco.log:/home/tapis/runtime_file/logs/service.log
+            - ./runtime_file/certs:/home/tapis/runtime_file/certs
         ports:
             - "5003:5000"
         environment:

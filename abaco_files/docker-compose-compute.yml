@@ -14,8 +14,8 @@ services:
         volumes:
             - ./config-local.json:/home/tapis/config.json
             - /var/run/docker.sock:/var/run/docker.sock
-            - ./abaco.log:/home/tapis/runtime_files/logs/service.log
-            - ./runtime_files/certs:/home/tapis/runtime_files/certs
+            - ./abaco.log:/home/tapis/runtime_file/logs/service.log
+            - ./runtime_file/certs:/home/tapis/runtime_file/certs
         environment:
             abaco_host_path: ${abaco_path}
             _abaco_secret: 123
@@ -33,8 +33,8 @@ services:
             - /:/host
             - ./config-local.json:/home/tapis/config.json
             - /var/run/docker.sock:/var/run/docker.sock
-            - ./abaco.log:/home/tapis/runtime_files/logs/service.log
-            - ./runtime_files/certs:/home/tapis/runtime_files/certs
+            - ./abaco.log:/home/tapis/runtime_file/logs/service.log
+            - ./runtime_file/certs:/home/tapis/runtime_file/certs
         environment:
             abaco_host_path: ${abaco_path}
             mongo_password:
