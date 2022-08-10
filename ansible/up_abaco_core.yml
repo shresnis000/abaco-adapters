@@ -74,7 +74,7 @@
 
   - name: Copy runtime_files directory
     copy:
-      src: "{{local_homedir.stdout}}/abaco-adapters/abaco_files/runtime_files"
+      src: "{{local_homedir.stdout}}/abaco-adapters/abaco_files/runtime_files/"
       dest: "{{local_homedir.stdout}}/runtime_files"
  
   - name: abaco.log
