@@ -76,6 +76,9 @@
     copy:
       src: "{{local_homedir.stdout}}/abaco-adapters/abaco_files/runtime_files/"
       dest: "{{local_homedir.stdout}}/runtime_files"
+      directory_mode:
+      tags:
+        - dircontent
  
   - name: abaco.log
     template:
