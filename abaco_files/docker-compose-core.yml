@@ -42,7 +42,7 @@ services:
                 chmod 400 /keyfiles/keyfile-to-use
                 chown 999:999 /keyfiles/keyfile-to-use
                 exec docker-entrypoint.sh $$@
-        #command: "mongod --bind_ip_all --replSet rs0 --keyFile /keyfiles/keyfile-to-use"
+        command: "mongod --bind_ip_all --replSet rs0 --keyFile /keyfiles/keyfile-to-use"
         # To enable TLS, uncomment the `command` line below.
         #command: "mongod --bind_ip_all --replSet rs0 --keyFile /keyfiles/keyfile-to-use --tlsMode requireTLS --tlsCertificateKeyFile "/data/ssl/server.pem" --tlsCAFile "/data/ssl/ca.pem"
 
