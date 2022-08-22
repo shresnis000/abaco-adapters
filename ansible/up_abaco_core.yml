@@ -100,6 +100,16 @@
     become: yes
     command: sudo setfacl --modify user:cc:rw /var/run/docker.sock
 
+  - name: pull images 
+    become: yes
+    become_user: cc
+    environment:
+      abaco_path: /home/cc
+      TAG: dev
+    shell: /usr/local/bin/docker-compose -f docker-compose-core.yml pull
+    args:
+      chdir: /home/cc
+  
   - name: docker compose up 
     become: yes
     become_user: cc
