@@ -3,19 +3,22 @@ import os
 import time
 import sys
 import json
-
+import statistics
+import threading
 
 def basic_response_checks(rsp):
     data = json.loads(rsp.content.decode('utf-8'))
     result = data['result']
     return result
 
+def abaco_req(base_url,reeeee,headers):
+    requests.get(f'{base_url}/adapters/{reeeee}/data', headers=headers)
+
 sys.path.append(os.path.split(os.getcwd())[0])
 sys.path.append('/actors')
-JWT = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJqdGkiOiJiODQyMTg5OS05MTYzLTRiYWQtOTcxZS0wZmU2MmU1MWFmNDEiLCJpc3MiOiJodHRwczovL2Rldi5kZXZlbG9wLnRhcGlzLmlvL3YzL3Rva2VucyIsInN1YiI6InRlc3R1c2VyMkBkZXYiLCJ0YXBpcy90ZW5hbnRfaWQiOiJkZXYiLCJ0YXBpcy90b2tlbl90eXBlIjoiYWNjZXNzIiwidGFwaXMvZGVsZWdhdGlvbiI6ZmFsc2UsInRhcGlzL2RlbGVnYXRpb25fc3ViIjpudWxsLCJ0YXBpcy91c2VybmFtZSI6InRlc3R1c2VyMiIsInRhcGlzL2FjY291bnRfdHlwZSI6InVzZXIiLCJleHAiOjE2NTkxNDA4NjksInRhcGlzL2NsaWVudF9pZCI6bnVsbCwidGFwaXMvZ3JhbnRfdHlwZSI6InBhc3N3b3JkIn0.fHxKP3xrLcaVrOx3jrhm833qC7njabyA5GXyS2u0ClvwaeXrryTaMfyzMa81eQrx-2hrqt5SNnm-DhzjKPAYps72hirLYKNHLGnQfBmMKhxx-JJYb5d4Qd0xLbKbG8tDq4lLH8unsognyZKwss2iDypoUrs2bCkQV9jsz-lMv0ldEWYG14-etrWf451WlCxF2RyoxdmE9nF-t59qMPhUFt11KUCnYKQjaxz8Z05ctc9aU6q13m8FZJcIjHSZcgu-EyzrwZq80IJhuj_nKce0jJx8eq2KKrHn8AOz-EmPGs3S6ifHsIB2nC9iAgL4MUtzNOMZyvsVDNkhjPhg54Od4g'
+JWT = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJqdGkiOiJiMDU1YjM1Zi04M2ZhLTRjZWItODYyYy05YmUwMjE5YThmMWEiLCJpc3MiOiJodHRwczovL2Rldi5kZXZlbG9wLnRhcGlzLmlvL3YzL3Rva2VucyIsInN1YiI6InRlc3R1c2VyMkBkZXYiLCJ0YXBpcy90ZW5hbnRfaWQiOiJkZXYiLCJ0YXBpcy90b2tlbl90eXBlIjoiYWNjZXNzIiwidGFwaXMvZGVsZWdhdGlvbiI6ZmFsc2UsInRhcGlzL2RlbGVnYXRpb25fc3ViIjpudWxsLCJ0YXBpcy91c2VybmFtZSI6InRlc3R1c2VyMiIsInRhcGlzL2FjY291bnRfdHlwZSI6InVzZXIiLCJleHAiOjE2NjExOTkyMjIsInRhcGlzL2NsaWVudF9pZCI6bnVsbCwidGFwaXMvZ3JhbnRfdHlwZSI6InBhc3N3b3JkIn0.FWIQuYyPy5jZNFGfUyCaHcO3gyIF1H8sN2Y-uqM-yqUD2jlYrF2mS-N2p_f8QI1JeLZ5q6NP4ZRf2fXWpfUCS1cZCnrDOCqvlj0WH24zOmCHwWBZRk8_m1Zhasb4a5h4h_cYtJrBdGTr1WPE4ao2WF6n-7rP_8nq2ZhRLIQRRCxLcKpK2kC2opVBdy04gmyrLjbAqo1zAJMlmWNRvrQzeRV65btX4RHtBcXTNtySSGQDvrpopUY-qmDC8lE3d2bkshhOtI14qMKuD0FRqgM-E405LPr3zhCUmEbHCL-hw-8l8srM2UbBNzZxLTeujCb-wb9ng13t7inttZ-0WSABuQ"
 
-
-base_url = 'https://localhost:8000'
+base_url = 'http://localhost:5000'
 headers={'X-Tapis-Token':JWT}
 
 
@@ -37,8 +40,14 @@ while idx<20 and not success:
 trials=3
 time_data=list(range(trials-1))
 time_stats={}
-for i in range(trials-1):
-    r4 = requests.get(f'{base_url}/adapters/{reeeee}/data', headers=headers)
+threads = []
+for i in range(trials):
+    t = threading.Thread(target=abaco_req, args=[base_url,reeeee,headers])
+    t.start()
+    threads.append(t)
+
+for thread in threads:
+    thread.join()
 
 r5= requests.get(f'http://localhost:5000/adapters/{reeeee}/logs', headers={'X-Tapis-Token':JWT})
 Time_breakdowns=basic_response_checks(r5)
