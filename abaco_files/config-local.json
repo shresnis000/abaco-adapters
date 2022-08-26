@@ -21,7 +21,7 @@
     "mongo_tls_certs_path": "$env{abaco_host_path}/runtime_files/certs:/home/tapis/runtime_files/certs",
     "admin_mongo_user": "admin",
     "admin_mongo_pass": "admin",
-    "rabbit_uri": "amqp://rabbit:5672",
+    "rabbit_uri": "amqp://10.52.3.187:5672",
     "rabbit_dash_host": "10.52.3.187",
     "admin_rabbitmq_user": "admin",
     "admin_rabbitmq_pass": "admin",
